@@ -35,7 +35,7 @@ Perfect for Homelabs, local dev environments, and simple DevOps monitoring.
     pip install docker requests
     ```
 
-## 🔧 Configuration
+## Configuration
 
 ### 1. Configure Docker Daemon
 Since the script uses `tcp://127.0.0.1:2375` to connect, you must enable the TCP socket in Docker.
