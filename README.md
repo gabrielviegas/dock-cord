@@ -1,67 +1,79 @@
-# Docker Container Monitoring with Discord Webhook
+**Docker Container Monitoring with Discord Webhooks**
 
+DockCord is a lightweight Python tool that monitors your Docker environment in real-time. It detects container events and instantly sends a notification to your Discord server whenever a container stops or crashes.
 
-## Overview
-This script monitors Docker container events and sends a notification to a Discord webhook whenever a container is stopped.
+Perfect for Homelabs, local dev environments, and simple DevOps monitoring.
 
 ## Features
-- Detects when a container is stopped (die event)
-- Sends a notification to a Discord webhook with the container ID, name, and timestamp
-- Uses the Docker SDK for Python
 
-## Requirements
-
-Ensure your homelab environment is properly configured before running the script.
+* **Real-time Detection:** Listens specifically for the `die` event (container stopped/killed).
+* **Instant Alerts:** Sends a formatted message to Discord with the Container Name, ID, and Timestamp.
+* **Lightweight:** Built with the Docker SDK for Python.
 
 ## Prerequisites
-Install the necessary dependencies on your Ubuntu system:
 
-- sudo apt-get update && sudo apt-get install -y python3 nginx
+* **Linux/Ubuntu** (or any system with Docker installed)
+* **Python 3.6+**
+* **Docker** running with remote API enabled (TCP)
 
-## Set Up a Python Virtual Environment
+## Installation
 
-It is recommended to use a virtual environment to run the script:
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/gabrielviegas/dock-cord.git](https://github.com/gabrielviegas/dock-cord.git)
+    cd dock-cord
+    ```
 
-- python3 -m venv .venv
-- source .venv/bin/activate
+2.  **Set up a Virtual Environment (Recommended):**
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate
+    ```
 
-## Install Dependencies
-Inside the virtual environment, install the required Python package:
-- pip install docker requests
+3.  **Install Dependencies:**
+    ```bash
+    pip install docker requests
+    ```
 
-## Configuration
+## 🔧 Configuration
 
-- Ensure Docker is installed and the Docker daemon is running with the remote API enabled (tcp://127.0.0.1:2375).
+### 1. Configure Docker Daemon
+Since the script uses `tcp://127.0.0.1:2375` to connect, you must enable the TCP socket in Docker.
 
-- Replace the webhook_url variable in the script with your actual Discord webhook URL.
+Edit your daemon config:
+```bash
+sudo nano /etc/docker/daemon.json
+```
+Add or modify the hosts line:
+```bash
+sudo systemctl restart docker
+```
 
-- Run the script:
+### 2. Configure the Script
+Open events.py and replace the webhook_url variable with your actual Discord Webhook URL:
+```bash
+webhook_url = "YOUR_DISCORD_WEBHOOK_URL_HERE"
+```
 
-- python3 events.py
+## Usage
+Run the script inside your virtual environment:
+```bash
+python3 events.py
+```
 
 ## Troubleshooting
+Permission Denied?
+If you get permission errors regarding the Docker socket, ensure your user is in the docker group:
+```bash
+sudo usermod -aG docker $USER
+newgrp docker
+```
 
-If you encounter permission issues, run the script with sudo or add your user to the docker group:
-
-- sudo usermod -aG docker $USER
-- newgrp docker
-
-- Ensure Docker's remote API is enabled by configuring /etc/docker/daemon.json:
-
-{
-  "hosts": ["unix:///var/run/docker.sock", "tcp://127.0.0.1:2375"]
-}
-
-Then restart Docker:
-
-- sudo systemctl restart docker
-
-## Notes
-
-- The script continuously listens for container stop events.
-
-- Ensure your Discord webhook is correctly configured.
+## Connection refused?
+Verify that Docker is listening on port 2375:
+```bash
+sudo netstat -tulpn | grep dockerd
+```
 
 ## License
-
 This project is licensed under the MIT License.
