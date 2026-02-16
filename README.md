@@ -1,4 +1,4 @@
-**Docker Container Monitoring with Discord Webhooks**
+**Docker container Mmnitoring with Discord webhooks**
 
 DockCord is a lightweight Python tool that monitors your Docker environment in real-time. It detects container events and instantly sends a notification to your Discord server whenever a container stops or crashes.
 
